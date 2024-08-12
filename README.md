@@ -57,12 +57,12 @@ Navigate to http://localhost:3000 to view the application.
 
 ##Components
 app/components
-- **Map: The core map component that renders the map, handles 3D buildings, and manages click events.
+- Map: The core map component that renders the map, handles 3D buildings, and manages click events.
 ##components/ui
-- **ShadCN Components: Pre-built UI components from the ShadCN library.
+- ShadCN Components: Pre-built UI components from the ShadCN library.
 ##components/ui-components
-- **Custom Components: Tailor-made components for this project, including headers and place detail displays.
+- Custom Components: Tailor-made components for this project, including headers and place detail displays.
 ##PlaceDetails: Displays detailed information about a selected place.
-- **Header: Contains the search bar for querying locations.
+- Header: Contains the search bar for querying locations.
 ##lib
-- **Utilities: Shared utility functions and libraries used throughout the project
+- Utilities: Shared utility functions and libraries used throughout the project
