@@ -55,12 +55,12 @@ yarn run dev
 Open Your Browser
 Navigate to http://localhost:3000 to view the application.
 
-Components
-#app/components
+**Components
+app/components
 Map: The core map component that renders the map, handles 3D buildings, and manages click events.
-#components/ui
+**components/ui
 ShadCN Components: Pre-built UI components from the ShadCN library.
-#components/ui-components
+**components/ui-components
 Custom Components: Tailor-made components for this project, including headers and place detail displays.
 PlaceDetails: Displays detailed information about a selected place.
 Header: Contains the search bar for querying locations.
