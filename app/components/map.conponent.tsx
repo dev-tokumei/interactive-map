@@ -110,7 +110,7 @@ export const Map = ({
       setMapRef(null); // Очистка ссылки на карту
       mapInstance.remove();
     };
-  }, [viewState, setMapRef, setViewState, setPlaceInfo]);
+  }, [viewState, setViewState]);
 
   return (
     <div ref={mapContainerRef} style={{ width: "100vw", height: "93vh" }} />

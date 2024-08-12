@@ -1,6 +1,7 @@
 "use client";
 import { PlaceInfo } from "@/app/types";
 import { DetailItem } from "./details-item.componen";
+import Image from "next/image";
 
 export const PlaceDetails = ({
   placeInfo,
@@ -26,7 +27,9 @@ export const PlaceDetails = ({
         </div>
         {placeInfo.photoUrl && (
           <div className="w-full md:w-1/3 md:pl-4">
-            <img
+            <Image
+              width={200}
+              height={200}
               src={placeInfo.photoUrl}
               alt="Место"
               className="w-full h-auto object-cover"
