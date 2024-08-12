@@ -1,12 +1,12 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { PlaceInfo, ViewState } from "@/app/types";
 
 export const Map = ({
   mapContainerRef,
-  setMapRef, // Получаем setter для mapRef
+  setMapRef,
   viewState,
   setViewState,
   setPlaceInfo,
@@ -17,6 +17,9 @@ export const Map = ({
   setViewState: React.Dispatch<React.SetStateAction<ViewState>>;
   setPlaceInfo: React.Dispatch<React.SetStateAction<PlaceInfo | null>>;
 }) => {
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const selectedFeatureId = useRef<string | null>(null);
+
   useEffect(() => {
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY!;
 
@@ -30,7 +33,7 @@ export const Map = ({
       antialias: true,
     });
 
-    setMapRef(mapInstance); // Сохраняем ссылку на экземпляр карты
+    setMapRef(mapInstance);
 
     mapInstance.on("style.load", () => {
       const style = mapInstance.getStyle();
@@ -53,7 +56,12 @@ export const Map = ({
               type: "fill-extrusion",
               minzoom: 15,
               paint: {
-                "fill-extrusion-color": "#aaa",
+                "fill-extrusion-color": [
+                  "case",
+                  ["==", ["id"], selectedFeatureId.current],
+                  "#ff0000",
+                  "#aaa",
+                ],
                 "fill-extrusion-height": [
                   "interpolate",
                   ["linear"],
@@ -82,7 +90,7 @@ export const Map = ({
     });
 
     mapInstance.on("click", "add-3d-buildings", (e) => {
-      const features = mapInstance!.queryRenderedFeatures(e.point, {
+      const features = mapInstance.queryRenderedFeatures(e.point, {
         layers: ["add-3d-buildings"],
       });
 
@@ -90,10 +98,12 @@ export const Map = ({
 
       const feature = features[0];
 
+      selectedFeatureId.current = feature.id as string;
+
       setPlaceInfo({
         id: feature.id as string,
         name: feature.properties?.name || "Неизвестно",
-        // @ts-ignore
+        //@ts-ignore
         coordinates: feature.geometry.coordinates[0].slice(0, 2) as [
           number,
           number,
@@ -104,13 +114,27 @@ export const Map = ({
         photoUrl: feature.properties?.photo_url || "",
         otherData: feature.properties?.other_data || "",
       });
+
+      mapInstance.setPaintProperty("add-3d-buildings", "fill-extrusion-color", [
+        "case",
+        ["==", ["id"], selectedFeatureId.current],
+        "#ff0000",
+        "#aaa",
+      ]);
     });
 
     return () => {
-      setMapRef(null); // Очистка ссылки на карту
+      setMapRef(null);
       mapInstance.remove();
     };
-  }, [viewState, setViewState]);
+  }, [setPlaceInfo]);
+
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.setCenter([viewState.longitude, viewState.latitude]);
+      mapRef.current.setZoom(viewState.zoom);
+    }
+  }, [viewState]);
 
   return (
     <div ref={mapContainerRef} style={{ width: "100vw", height: "93vh" }} />
